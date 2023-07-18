@@ -1,9 +1,8 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
-using namespace std;
-
 #include <cstdio>
 #include <assert.h>
+using namespace std;
 #if 0
 //4. 友元
 //友元分为 : 友元函数和友元类
@@ -455,7 +454,7 @@ void vector<T>::Push_Back(const T& x)
 //	return 0;
 //}
 
-
+#if 0
 //字符串转成整型
 int firstUniqChar(string s) {
 	int count[26] = { 0 };
@@ -475,4 +474,435 @@ int main()
 {
 	string s = "loveleetcode";
 	firstUniqChar(s);
+}
+#endif
+
+#if 0
+//实现一个简单的string类
+namespace zh
+{
+	class string
+	{
+	public:
+		/*string()
+			:str(new char[1])
+		{
+			str[0] = '\0';
+		}
+		string(char* strs)
+			:str(new char[strlen(str)+1])
+		{
+			strcpy(str, strs) ;
+		}*/
+		string(char* strs = " ")
+			:_str(new char[strlen(strs) + 1])
+		{
+			strcpy(_str, strs);
+		}
+		string(const string& s)
+			:_str(new char[strlen(s._str)+1])
+		{
+			strcpy(_str, s._str);
+		}
+		~string()
+		{
+			delete[] _str;
+			_str = nullptr;
+		}
+
+		size_t size() { return strlen(_str); }
+
+		char& operator[](size_t i) { return _str[i]; }
+
+		string& operator = (const string& s)
+		{
+			if (&s != this)
+			{
+				//开辟一个和s一样大的空间
+				char* pStr = new char[strlen(s._str) + 1];
+				strcpy(pStr, s._str);//然后拷贝给当前的
+				delete[] _str;//释放旧的空间
+				_str = pStr;//然后指向新开的空间
+			}
+			return *this;
+		}
+		
+
+		const char* c_str() { return _str; }
+	private:
+		 char* _str;
+
+	};
+	void testString1()
+	{
+		string s0("hello");
+		string s1(s0);
+
+		cout << s0.c_str() << endl;
+		cout << s1.c_str() << endl;
+
+	}
+}
+using namespace zh;
+int main()
+{
+	zh::testString1();
+
+	return 0;
+}
+#endif
+
+#if 0
+//实现一个支持增删改查的string
+namespace zh
+{
+	class string
+	{
+	public:
+		typedef char* iterator;
+		iterator begin()
+		{
+			return _str;
+		}
+		iterator end()
+		{
+			return _str + _size;
+		}
+
+		string(const char* str ="")
+			:_str(new char[strlen(str)+1])
+		{
+			_size = strlen(str);
+			_capacity = _size;
+			_str = new char[_capacity + 1];
+			strcpy(_str, str);
+		}
+		string(const string& s)
+			:_str(nullptr), _size(0), _capacity(0)
+		{
+			string tmp(s_str);
+			this->swap(tmp);
+			
+		}
+		void swap(string& s)
+		{
+			::swap(_str, s._str);
+			::swap(_size, s._size);
+			::swap(_capacity, s._capacity);
+		}
+		string& operator=(const string& s)
+		{
+			this->swap(s);
+			return *this;
+		}
+		~string()
+		{
+			delete[] _str;
+			_str = nullptr;
+			_size = _capacity = 0;
+		}
+		size_t size() const { return _size; }
+		size_t capacity() { return _capacity; }
+		const char* c_str() { return _str; }
+		const char& operator[](size_t i) const { assert(i < _size); return _str[i]; }
+		void push_back(char ch)
+		{
+			/*if (_size == _capacity)
+			{
+				size_t newcapacity = _capacity == 0 ? 2 : _capacity * 2;
+				reverse(newcapacity);
+			}
+			_str[_size] = ch;
+			++_size;
+			_str[_size] = '\0';*/
+			insert(_size, ch);
+		}
+		void reverse(size_t n)
+		{
+			if (n > _capacity)
+			{
+				char* tmp = new char[n + 1];
+				strcpy(tmp, _str);
+				delete _str;
+				_str = tmp;
+				_capacity = n;
+			}
+		}
+		void resize(size_t n,char ch = '\0')
+		{
+			if (n < _size)
+			{
+				_str[n] = '\0';
+				_size = n;
+			}
+			else
+			{
+				if (n > _capacity)
+				{
+					reverse(n);
+				}
+				for (size_t i = 0; i < _size; i++)
+				{
+					_str[i] = ch;
+				}
+				_size = n;
+				_str[_size] = '\0';
+			}
+		}
+		void append(const char* ch)
+		{
+			/*size_t len = strlen(ch);
+			if (_size + len > _capacity)
+			{
+				reverse(_size + len);
+			}
+			strcpy(_str+ _size, ch);
+			_size += len;*/
+			insert(_size, ch);
+		}
+		string& operator+=(char ch)
+		{
+			this->push_back(ch);
+			return *this;
+		}
+		string& operator+=(const char* ch)
+		{
+			this->append(ch);
+			return *this;
+		}
+		string& insert(size_t pos,char ch)
+		{
+			assert(pos <= _size);
+			if (_size == _capacity)
+			{
+				size_t newcapacity = _capacity == 0 ? 2 : _capacity * 2;
+				reverse(newcapacity);
+			}
+			int end = _size;
+			while (end >= pos)
+			{
+				_str[end + 1] = _str[end];
+				--end;
+			}
+			_str[end + 1] = ch;
+			++_size;
+			return *this;
+		}
+		string& insert(size_t pos,const char* ch) 
+		{
+			assert(pos <= _size);
+			//如果空间不够先增容
+			size_t len = strlen(ch);
+			if (_size + len > _capacity)
+			{
+				reverse(_size + len);
+			}
+			//挪动数据
+			size_t end = _size;
+			while (end >= pos)
+			{
+				_str[end + len] = _str[end];
+				--end;
+			}
+			/*for (size_t i = 0; i < len; i++)
+			{
+				_str[pos++] = ch[i++];
+			}*/
+			strncpy(_str + pos, ch, len);
+			_size += len;
+
+			return *this;
+		}
+		void erase(size_t pos, size_t len = npos)
+		{
+			if (len >= _size - pos)
+			{
+				_str[pos] = '\0';
+				_size = pos;
+			}
+			else
+			{
+				size_t i = pos + len;
+				while (i <= _size)
+				{
+					_str[i - len] = _str[i];
+					++i;
+				}
+				_size -= len;
+			}
+		}
+		size_t find(char ch, size_t pos =0) 
+		{
+			for (size_t i = pos; i < _size; ++i)
+			{
+				if (_str[i] == ch);
+				return i;
+			}
+			return npos;
+		}
+		size_t find(const char* str, size_t pos = 0) 
+		{
+			char* p = strstr(_str, str);
+			if (p == nullptr)
+			{
+				return npos;
+			}	
+			else
+			{
+				return p - str;
+			}
+		}
+		bool operator < (const string& s)
+		{
+			int ret = strcmp(_str, s._str);
+			return ret < 0;
+		}
+		bool operator == (const string& s)
+		{
+			int ret = strcmp(_str, s._str);
+			return ret == 0;
+		}
+		bool operator<=(const string& s)
+		{
+			return *this < s || *this == s;
+		}
+		bool operator > (const string& s)
+		{
+			return !(*this < s) ;
+		}
+		bool operator >	 (const string& s)
+		{
+			return !(*this < s);
+		}
+		bool operator >=(const string& s)
+		{
+			return !(*this < s);
+		}
+		bool operator !=(const string& s)
+		{
+			return !(*this == s);
+		}
+	private: 
+		char* _str;
+		size_t _size;
+		size_t _capacity;
+		static size_t npos;
+	};
+size_t string::npos = -1;;
+	ostream& operator << (ostream& out, const string& s)
+	{
+		for (size_t i = 0; i < s.size(); i++)
+		{
+			cout << s[i];
+		}
+		return out;
+	}
+	istream& operator >> (istream& in,  string& s)
+	{
+		while (1)
+		{
+			char ch;
+			ch = in.get();
+			if (ch == ' ' || ch == '\n')
+				break;
+			else
+				s += ch;
+		}
+		return in;
+	}
+	void testString()
+	{
+		string s1("hello");
+		
+		
+
+	}
+}
+using namespace zh;
+int main()
+{
+	testString();
+
+	return 0;
+}
+#endif
+
+class String
+{
+public:
+	//构造函数
+	String(const char* str = "")
+		:_str(new char[strlen(str)+1])
+	{
+		strcpy(_str, str);
+	}
+	////深拷贝传统写法
+	//String(const String& str)
+	//	:_str(new char[strlen(str._str) + 1])
+	//{
+	//	strcpy(_str, str._str);
+	//}
+	//深拷贝 - 现代写法
+	String(const String& s)
+		:_str(nullptr)
+	{
+		String tmp(s._str);
+		swap(_str, tmp._str);
+	}
+	//s1 = s2 传统写法
+	/*String& operator = (const String& s)
+	{
+		if (this != &s)
+		{
+			char* ttmp = new char[strlen(s._str) + 1];
+			strcpy(ttmp, s._str);
+			delete[] _str;
+			_str = ttmp;
+		}
+		return *this;
+	}*/
+	//深拷贝 - 现代写法
+	String& operator = (const String& s)
+	{
+		if (this != &s)
+		{
+			String tmp(s._str);
+			swap(_str, tmp._str);
+		}
+		return *this;
+	}
+	~String()
+	{
+		delete[] _str;
+		_str = nullptr;
+	}
+	 size_t size()const
+	{
+		return strlen(_str);
+	}
+	char& operator[](size_t i)const
+	{
+		return _str[i];
+	}
+private:
+	char* _str;
+};
+ostream& operator << (ostream& out, const String& s)
+{
+	for (size_t i = 0; i < s.size(); i++)
+	{
+		cout << s[i];
+	}
+	return out;
+}
+int main()
+{
+	String s1("hello");
+	String s2(s1);
+	for (size_t i = 0; i < s2.size(); i++)
+	{
+		cout << s2[i];
+
+	}
+	cout << s1<< endl;
 }
