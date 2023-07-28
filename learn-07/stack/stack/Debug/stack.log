@@ -1,0 +1,7 @@
+﻿  test.cpp
+F:\C\LearnC\C-\learn-07\stack\stack\priority_ququ.h(44,17): warning C4018: “<”: 有符号/无符号不匹配
+F:\C\LearnC\C-\learn-07\stack\stack\priority_ququ.h(40): message : 在编译 类 模板 成员函数“void zh::priority_queue<int,std::vector<int,std::allocator<int>>,zh::greater<int>>::AdjustDwon(int)”时
+F:\C\LearnC\C-\learn-07\stack\stack\priority_ququ.h(75): message : 查看对正在编译的函数 模板 实例化“void zh::priority_queue<int,std::vector<int,std::allocator<int>>,zh::greater<int>>::AdjustDwon(int)”的引用
+F:\C\LearnC\C-\learn-07\stack\stack\priority_ququ.h(85): message : 查看对正在编译的 类 模板 实例化“zh::priority_queue<int,std::vector<int,std::allocator<int>>,zh::greater<int>>”的引用
+F:\C\LearnC\C-\learn-07\stack\stack\priority_ququ.h(48,17): warning C4018: “<”: 有符号/无符号不匹配
+  stack.vcxproj -> F:\C\LearnC\C-\learn-07\stack\Debug\stack.exe
