@@ -139,6 +139,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="bit_set.h" />
+    <ClInclude Include="BloomFilter.h" />
     <ClInclude Include="HashTable.h" />
     <ClInclude Include="OPEN_HASH.hpp" />
     <ClInclude Include="unordered_map.hpp" />

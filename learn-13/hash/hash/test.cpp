@@ -4,6 +4,8 @@
 
 #include "HashTable.h"
 #include "OPEN_HASH.hpp"
+#include "bit_set.h"
+#include "BloomFilter.h"
 using namespace OPEN_HASH;
 
 //哈希(散列) :将存储的数据跟存储的位置使用哈希函数建立出映射关系，方便我们进行高效查找。
@@ -13,6 +15,8 @@ using namespace OPEN_HASH;
 int main()
 {
 	// TestHashTable();
-	 TestHashTable2();
+	 //TestHashTable2();
+	//BITSET::test_bitset();
+	bit::test_bloomfilter();
 	return 0;
 }
